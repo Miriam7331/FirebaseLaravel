@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FirebaseAuthController;
 
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -16,3 +17,4 @@ Route::post('login', [FirebaseAuthController::class, 'login'])->name('login');
 
 Route::get('home', [FirebaseAuthController::class, 'home'])->name('home');
 Route::post('logout', [FirebaseAuthController::class, 'logout'])->name('logout');
+

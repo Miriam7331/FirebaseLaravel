@@ -69,9 +69,16 @@ class FirebaseAuthController extends Controller
         try {
             // Intentar iniciar sesión con las credenciales proporcionadas
             $user = $this->auth->signInWithEmailAndPassword($request->email, $request->password);
+            //obtener info del usuario
+            $userID = $user->firebaseUserId();
+            $datosUser = $this->auth->getUser($userID);
 
             // Guardar la información del usuario en la sesión
-            session(['firebase_user' => $user]);
+            // session(['firebase_user' => $user]);
+            session([
+                'firebase_user_email' => $datosUser->email,
+                'firebase_user_id' => $userID,
+            ]);
 
             // Redirigir al home
             return redirect()->route('home');
@@ -86,16 +93,23 @@ class FirebaseAuthController extends Controller
      */
     public function home()
     {
+
+        $userEmail = session('firebase_user_email');
+        $userID = session('firebase_user_id');
         // Obtener el usuario de la sesión
-        $user = session('firebase_user');
+        // $user = session('firebase_user');
 
         // Si no hay un usuario autenticado, redirigir al login
-        if (!$user) {
+        if (!$userEmail || !$userID) {
             return redirect()->route('login');
         }
 
         // Mostrar la vista del home con los detalles del usuario
-        return view('home', ['user' => $user]);
+        // return view('home', ['user' => $user]);
+        return view('home', [
+            'user_email' => $userEmail,
+            'user_id' => $userID,
+        ]);
     }
 
     /**
